@@ -5,16 +5,16 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
-import io.reactivex.Maybe
+import io.reactivex.Flowable
 import org.amshove.kluent.mock
 import org.apache.maven.artifact.ant.shaded.IOUtil
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
-import redstar.featured.list.FeatureListViewModel
-import redstar.featured.list.FeatureResponse
-import redstar.featured.list.SteamClient
+import redstar.featured.data.api.SteamClient
+import redstar.featured.data.dto.FeatureResponse
+import redstar.featured.ui.main.FeatureListViewModel
 
 @RunWith(MockitoJUnitRunner::class)
 class FeatureListViewModelTest {
@@ -63,12 +63,12 @@ class FeatureListViewModelTest {
                 .create()
     }
 
-    fun getFeaturedJson(): Maybe<FeatureResponse> {
+    fun getFeaturedJson(): Flowable<FeatureResponse> {
         val response = gson.fromJson(
                 IOUtil.toString(javaClass.getResourceAsStream("/featured.json")),
                 FeatureResponse::class.java
         )
 
-        return Maybe.just(response)
+        return Flowable.just(response)
     }
 }
