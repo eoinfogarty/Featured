@@ -1,12 +1,13 @@
 package redstar.featured.ui.main
 
-import android.content.res.Resources
+import android.content.Context
 import android.view.View
+import android.widget.Toast
 import redstar.featured.R
 import redstar.featured.data.dto.Feature
 
 class FeatureViewModel(
-        val resources: Resources,
+        val context: Context,
         val feature: Feature
 ) {
 
@@ -24,13 +25,17 @@ class FeatureViewModel(
 
     fun getPrice(): String {
         if (feature.finalPrice == 0) {
-            return resources.getString(R.string.free)
+            return context.getString(R.string.free)
         } else {
             return feature.finalPrice.toString()
         }
     }
 
     fun getDiscountPercent(): String {
-        return resources.getString(R.string.discount_format, feature.discountPercent.toString())
+        return context.getString(R.string.discount_format, feature.discountPercent.toString())
+    }
+
+    fun onClick(view: View) {
+        Toast.makeText(context, "Clicked $feature", Toast.LENGTH_LONG).show()
     }
 }

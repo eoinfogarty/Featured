@@ -1,6 +1,6 @@
-package redstar.featured
+package redstar.featured.ui.main
 
-import android.content.res.Resources
+import android.content.Context
 import android.view.View
 import org.amshove.kluent.shouldEqual
 import org.amshove.kluent.shouldEqualTo
@@ -10,8 +10,9 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
+import redstar.featured.BuildConfig
+import redstar.featured.R
 import redstar.featured.data.dto.Feature
-import redstar.featured.ui.main.FeatureViewModel
 
 @RunWith(RobolectricTestRunner::class)
 @Config(
@@ -20,17 +21,17 @@ import redstar.featured.ui.main.FeatureViewModel
 )
 class FeatureViewModelTest {
 
-    lateinit var res: Resources
+    lateinit var context: Context
 
     @Before
     fun setup() {
-        res = RuntimeEnvironment.application.resources
+        context = RuntimeEnvironment.application
     }
 
     @Test
     fun shouldGetName() {
         val feature = createMockFullPriceFeature()
-        val fullPriceViewModel = FeatureViewModel(res, feature)
+        val fullPriceViewModel = FeatureViewModel(context, feature)
 
         fullPriceViewModel.getTitle() shouldEqualTo feature.title
     }
@@ -38,7 +39,7 @@ class FeatureViewModelTest {
     @Test
     fun shouldGetHeaderImage() {
         val feature = createMockFullPriceFeature()
-        val fullPriceViewModel = FeatureViewModel(res, feature)
+        val fullPriceViewModel = FeatureViewModel(context, feature)
 
         fullPriceViewModel.getHeaderImage() shouldEqualTo feature.headerImage
     }
@@ -46,16 +47,16 @@ class FeatureViewModelTest {
     @Test
     fun shouldGetFormattedDiscountPercent() {
         val feature = createMockDiscountedFeature()
-        val discountedViewModel = FeatureViewModel(res, feature)
+        val discountedViewModel = FeatureViewModel(context, feature)
 
         discountedViewModel.getDiscountPercent() shouldEqual
-                res.getString(R.string.discount_format, feature.discountPercent.toString())
+                context.getString(R.string.discount_format, feature.discountPercent.toString())
     }
 
     @Test
     fun shouldGetDiscountVisibility() {
-        val fullPriceViewModel = FeatureViewModel(res, createMockFullPriceFeature())
-        val discountedViewModel = FeatureViewModel(res, createMockDiscountedFeature())
+        val fullPriceViewModel = FeatureViewModel(context, createMockFullPriceFeature())
+        val discountedViewModel = FeatureViewModel(context, createMockDiscountedFeature())
 
         fullPriceViewModel.getDiscountVisibility() shouldEqualTo View.GONE
         discountedViewModel.getDiscountVisibility() shouldEqualTo View.VISIBLE
@@ -64,11 +65,11 @@ class FeatureViewModelTest {
     @Test
     fun shouldGetPrice() {
         val feature = createMockFullPriceFeature()
-        val fullPriceViewModel = FeatureViewModel(res, feature)
-        val freeViewModel = FeatureViewModel(res, createMockFreeFeature())
+        val fullPriceViewModel = FeatureViewModel(context, feature)
+        val freeViewModel = FeatureViewModel(context, createMockFreeFeature())
 
         fullPriceViewModel.getPrice() shouldEqualTo feature.finalPrice.toString()
-        freeViewModel.getPrice() shouldEqualTo res.getString(R.string.free)
+        freeViewModel.getPrice() shouldEqualTo context.getString(R.string.free)
     }
 
     private fun createMockFullPriceFeature(): Feature = Feature(

@@ -1,4 +1,4 @@
-package redstar.featured
+package redstar.featured.ui.main
 
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
@@ -14,7 +14,6 @@ import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
 import redstar.featured.data.api.SteamClient
 import redstar.featured.data.dto.FeatureResponse
-import redstar.featured.ui.main.FeatureListViewModel
 
 @RunWith(MockitoJUnitRunner::class)
 class FeatureListViewModelTest {

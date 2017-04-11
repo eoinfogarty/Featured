@@ -3,5 +3,5 @@
     
     <!-- Feature -->
     <string name="free">Free</string>
-    <string name="discount_format">%s1&amp;</string>
+    <string name="discount_format">%s%%</string>
 </resources>
