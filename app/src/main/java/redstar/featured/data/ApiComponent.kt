@@ -1,6 +1,7 @@
 package redstar.featured.data
 
 import dagger.Component
+import redstar.featured.ui.detail.DetailActivity
 import redstar.featured.ui.main.MainActivity
 import javax.inject.Singleton
 
@@ -10,6 +11,6 @@ import javax.inject.Singleton
 ))
 interface ApiComponent {
 
-    fun inject(mainActivity: MainActivity)
-
+    fun inject(activity: MainActivity)
+    fun inject(activity: DetailActivity)
 }

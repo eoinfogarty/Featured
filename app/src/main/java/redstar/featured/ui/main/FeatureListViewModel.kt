@@ -9,7 +9,6 @@ import redstar.featured.data.api.SteamClient
 import redstar.featured.data.dto.Feature
 import redstar.featured.data.dto.FeatureResponse
 import javax.inject.Inject
-import javax.inject.Singleton
 
 class FeatureListViewModel @Inject constructor(
         val steamClient: SteamClient
@@ -30,8 +29,8 @@ class FeatureListViewModel @Inject constructor(
                 .getFeatured()
                 .subscribeOn(Schedulers.io())
                 .map(FeatureResponse::featured)
-                .doOnNext { featuresSubject.onNext(it) }
-                .doOnError { Log.e(tag, "Error loading features : $it") }
+                .doOnNext { featured -> featuresSubject.onNext(featured) }
+                .doOnError { error -> Log.e(tag, "Error loading features : $error") }
                 .doAfterTerminate { isLoadingSubject.onNext(false) }
     }
 
