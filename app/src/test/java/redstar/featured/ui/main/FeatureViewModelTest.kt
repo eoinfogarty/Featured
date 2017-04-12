@@ -1,37 +1,47 @@
 package redstar.featured.ui.main
 
 import android.content.Context
+import android.content.Intent
 import android.view.View
+import com.nhaarman.mockito_kotlin.verify
 import org.amshove.kluent.shouldEqual
 import org.amshove.kluent.shouldEqualTo
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mock
+import org.mockito.MockitoAnnotations
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.annotation.Config
 import redstar.featured.BuildConfig
+import redstar.featured.FeatureApplication
 import redstar.featured.R
 import redstar.featured.data.dto.Feature
+import redstar.featured.ui.detail.DetailActivity
 
 @RunWith(RobolectricTestRunner::class)
 @Config(
         constants = BuildConfig::class,
-        manifest = "src/main/AndroidManifest.xml"
+        sdk = intArrayOf(21)
 )
 class FeatureViewModelTest {
 
-    lateinit var context: Context
+    @Mock lateinit var context: Context
+
+    lateinit var application: FeatureApplication
 
     @Before
     fun setup() {
-        context = RuntimeEnvironment.application
+        MockitoAnnotations.initMocks(this)
+
+        application = RuntimeEnvironment.application as FeatureApplication
     }
 
     @Test
     fun shouldGetName() {
         val feature = createMockFullPriceFeature()
-        val fullPriceViewModel = FeatureViewModel(context, feature)
+        val fullPriceViewModel = FeatureViewModel(application, feature)
 
         fullPriceViewModel.getTitle() shouldEqualTo feature.title
     }
@@ -39,7 +49,7 @@ class FeatureViewModelTest {
     @Test
     fun shouldGetHeaderImage() {
         val feature = createMockFullPriceFeature()
-        val fullPriceViewModel = FeatureViewModel(context, feature)
+        val fullPriceViewModel = FeatureViewModel(application, feature)
 
         fullPriceViewModel.getHeaderImage() shouldEqualTo feature.headerImage
     }
@@ -47,32 +57,52 @@ class FeatureViewModelTest {
     @Test
     fun shouldGetFormattedDiscountPercent() {
         val feature = createMockDiscountedFeature()
-        val discountedViewModel = FeatureViewModel(context, feature)
+        val discountedViewModel = FeatureViewModel(application, feature)
 
         discountedViewModel.getDiscountPercent() shouldEqual
-                context.getString(R.string.discount_format, feature.discountPercent.toString())
+                application.getString(R.string.discount_format, feature.discountPercent.toString())
     }
 
     @Test
-    fun shouldGetDiscountVisibility() {
-        val fullPriceViewModel = FeatureViewModel(context, createMockFullPriceFeature())
-        val discountedViewModel = FeatureViewModel(context, createMockDiscountedFeature())
+    fun shouldShowDiscountLabel() {
+        val discountedViewModel = FeatureViewModel(application, createMockDiscountedFeature())
 
-        fullPriceViewModel.getDiscountVisibility() shouldEqualTo View.GONE
         discountedViewModel.getDiscountVisibility() shouldEqualTo View.VISIBLE
     }
 
     @Test
-    fun shouldGetPrice() {
+    fun shouldNotShowDiscountLabel() {
+        val fullPriceViewModel = FeatureViewModel(application, createMockFullPriceFeature())
+
+        fullPriceViewModel.getDiscountVisibility() shouldEqualTo View.GONE
+    }
+
+    @Test
+    fun shouldGetPriceWhenNotFree() {
         val feature = createMockFullPriceFeature()
-        val fullPriceViewModel = FeatureViewModel(context, feature)
-        val freeViewModel = FeatureViewModel(context, createMockFreeFeature())
+        val fullPriceViewModel = FeatureViewModel(application, feature)
 
         fullPriceViewModel.getPrice() shouldEqualTo feature.finalPrice.toString()
-        freeViewModel.getPrice() shouldEqualTo context.getString(R.string.free)
+    }
+
+    @Test
+    fun shouldNotGetPriceWhenFree() {
+        val freeViewModel = FeatureViewModel(application, createMockFreeFeature())
+
+        freeViewModel.getPrice() shouldEqualTo application.getString(R.string.free)
+    }
+
+    @Test
+    fun shouldLaunchDetailActivity() {
+        val feature = createMockFullPriceFeature()
+        val viewModel = FeatureViewModel(context, feature)
+
+        viewModel.onClick(View(application))
+        verify(context).startActivity(Intent(context, DetailActivity::class.java))
     }
 
     private fun createMockFullPriceFeature(): Feature = Feature(
+            id = 553280,
             title = "Stellaris: Utopia",
             headerImage = "http://cdn.akamai.steamstatic.com/steam/apps/553280/header.jpg?t=1491483378",
             discounted = false,
@@ -81,6 +111,7 @@ class FeatureViewModelTest {
     )
 
     private fun createMockDiscountedFeature(): Feature = Feature(
+            id = 594370,
             title = "Crazy Fishing",
             headerImage = "http://cdn.akamai.steamstatic.com/steam/apps/594370/header.jpg?t=1491472265",
             discounted = true,
@@ -89,6 +120,7 @@ class FeatureViewModelTest {
     )
 
     private fun createMockFreeFeature(): Feature = Feature(
+            id = 586030,
             title = "Shardbound",
             headerImage = "http://cdn.akamai.steamstatic.com/steam/apps/586030/header.jpg?t=1491494446",
             discounted = false,

@@ -1,10 +1,11 @@
 package redstar.featured.ui.main
 
 import android.content.Context
+import android.content.Intent
 import android.view.View
-import android.widget.Toast
 import redstar.featured.R
 import redstar.featured.data.dto.Feature
+import redstar.featured.ui.detail.DetailActivity
 
 class FeatureViewModel(
         val context: Context,
@@ -36,6 +37,6 @@ class FeatureViewModel(
     }
 
     fun onClick(view: View) {
-        Toast.makeText(context, "Clicked $feature", Toast.LENGTH_LONG).show()
+        context.startActivity(Intent(context, DetailActivity::class.java))
     }
 }

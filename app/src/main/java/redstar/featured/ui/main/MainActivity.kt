@@ -38,10 +38,12 @@ class MainActivity : AppCompatActivity() {
                 viewModel.getLoadingObservable()
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe { showLoading(it) },
-
-                viewModel.getFeatured().subscribe()
+                        .subscribe { showLoading(it) }
         )
+
+        if (savedInstanceState == null) {
+            subscriptions.add(viewModel.getFeatured().subscribe())
+        }
     }
 
     private fun showLoading(loading: Boolean) {

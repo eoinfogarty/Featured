@@ -6,7 +6,6 @@ import com.google.gson.GsonBuilder
 import org.amshove.kluent.shouldEqualTo
 import org.apache.maven.artifact.ant.shaded.IOUtil
 import org.junit.Test
-import redstar.featured.data.dto.Feature
 
 class FeatureTest {
 
@@ -19,6 +18,7 @@ class FeatureTest {
                 Feature::class.java
         )
 
+        feature.id shouldEqualTo 553280
         feature.title shouldEqualTo "Stellaris: Utopia"
         feature.discounted shouldEqualTo false
         feature.finalPrice shouldEqualTo 198000

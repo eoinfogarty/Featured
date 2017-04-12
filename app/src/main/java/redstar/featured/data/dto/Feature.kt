@@ -4,6 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class Feature(
 
+        @SerializedName("id")
+        val id: Int,
+
         @SerializedName("name")
         val title: String,
 
