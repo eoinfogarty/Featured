@@ -1,52 +1,76 @@
 package redstar.featured.ui.detail
 
-import com.google.gson.FieldNamingPolicy
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.google.gson.reflect.TypeToken
+import com.github.salomonbrys.kotson.fromJson
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import io.reactivex.Flowable
 import org.apache.maven.artifact.ant.shaded.IOUtil
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import redstar.featured.GsonUtil
+import redstar.featured.RxSchedulersOverrideRule
 import redstar.featured.data.api.SteamClient
 import redstar.featured.data.dto.DetailResponse
-import java.lang.reflect.Type
 
 class DetailViewModelTest {
 
-    val gson = createGson()
+    // todo should be in companion object???
+    val appId = 553280
+
+    @Rule @JvmField val rxSchedulersOverrideRule = RxSchedulersOverrideRule()
+
+    val gson = GsonUtil.gson
     val steamClient: SteamClient = mock()
 
     @Before
     fun setup() {
-        whenever(steamClient.getDetail(553280)).thenReturn(getDetailGson())
+        whenever(steamClient.getDetail(appId)).thenReturn(getDetailGson())
     }
 
     @Test
     fun loadsDetails() {
         val viewModel = DetailViewModel(steamClient)
 
-        val testSubscriber = viewModel.getDetail().test()
+        val testSubscriber = viewModel.getDetail(appId).test()
         testSubscriber.assertComplete()
         testSubscriber.assertValueCount(1)
 
-        verify(steamClient).getDetail(553280)
+        verify(steamClient).getDetail(appId)
     }
 
-    fun createGson(): Gson {
-        return GsonBuilder()
-                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                .create()
+    @Test
+    fun shouldGetTitle() {
+        val viewModel = DetailViewModel(steamClient)
+        val testSubscriber = viewModel.getDetailObservable().test()
+
+        val detail = getDetailGson().blockingSingle().values.elementAt(0).data
+
+        viewModel.getDetail(appId)
+
+        // todo
+//        testSubscriber.assertValueCount(1)
+//        testSubscriber.assertValue(detail)
+
+        verify(steamClient).getDetail(appId)
     }
 
-    private fun getDetailGson(): Flowable<java.util.HashMap<String, DetailResponse>> {
+    @Test
+    fun shouldGetHeaderUrl() {
 
-        val type: Type = TypeToken.get(java.util.HashMap<String, DetailResponse>().javaClass).type
+    }
+
+    @Test
+    fun shouldGetDescription() {
+
+    }
+
+    private fun getDetailGson(): Flowable<HashMap<String, DetailResponse>> {
+
         val json: String = IOUtil.toString(javaClass.getResourceAsStream("/detail.json"))
+        val response = gson.fromJson<HashMap<String, DetailResponse>>(json)
 
-        return Flowable.just(gson.fromJson(json, type))
+        return Flowable.just(response)
     }
 }

@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe { showLoading(it) }
+
         )
 
         if (savedInstanceState == null) {

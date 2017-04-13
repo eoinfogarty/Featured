@@ -37,6 +37,8 @@ class FeatureViewModel(
     }
 
     fun onClick(view: View) {
-        context.startActivity(Intent(context, DetailActivity::class.java))
+        val intent = Intent(context, DetailActivity::class.java)
+        intent.putExtra(DetailActivity.KEY_APP_ID, feature.id)
+        context.startActivity(intent)
     }
 }
