@@ -14,7 +14,7 @@ class FeatureListAdapter : RecyclerView.Adapter<FeatureListAdapter.ViewHolder>()
     val features = mutableListOf<Feature>()
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent?.context).inflate(R.layout.item_feature,parent, false)
+        val view = LayoutInflater.from(parent?.context).inflate(R.layout.item_feature, parent, false)
         return ViewHolder(view)
     }
 

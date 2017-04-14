@@ -1,6 +1,7 @@
 package redstar.featured.ui.main
 
 import android.databinding.DataBindingUtil
+import android.opengl.Visibility
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -47,8 +48,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showLoading(loading: Boolean) {
-        binding.progress.visibility = if (loading) View.VISIBLE else View.GONE
+    private fun showLoading(loadingVisibility: Int) {
+        binding.progress.visibility = loadingVisibility
     }
 
     override fun onDestroy() {

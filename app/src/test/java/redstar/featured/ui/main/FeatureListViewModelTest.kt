@@ -1,5 +1,6 @@
 package redstar.featured.ui.main
 
+import android.view.View
 import com.google.gson.Gson
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
@@ -46,17 +47,17 @@ class FeatureListViewModelTest {
 
         // initial state is not loading
         var testSubscriber = viewModel.getLoadingObservable().test()
-        testSubscriber.assertValue(false)
+        testSubscriber.assertValue(View.GONE)
 
         // start loading
         val loadFeatured = viewModel.getFeatured()
         testSubscriber = viewModel.getLoadingObservable().test()
-        testSubscriber.assertValue(true)
+        testSubscriber.assertValue(View.VISIBLE)
 
         // finish loading
         loadFeatured.subscribe()
         testSubscriber = viewModel.getLoadingObservable().test()
-        testSubscriber.assertValue(false)
+        testSubscriber.assertValue(View.GONE)
     }
 
     fun getFeaturedJson(): Flowable<FeatureResponse> {

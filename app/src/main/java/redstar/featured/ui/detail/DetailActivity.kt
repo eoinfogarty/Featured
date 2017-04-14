@@ -19,7 +19,6 @@ class DetailActivity : AppCompatActivity() {
     }
 
     @Inject lateinit var viewModel: DetailViewModel
-
     private lateinit var binding: ActivityDetailBinding
     private val subscriptions = CompositeDisposable()
 

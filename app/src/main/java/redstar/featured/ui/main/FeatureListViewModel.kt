@@ -1,6 +1,7 @@
 package redstar.featured.ui.main
 
 import android.util.Log
+import android.view.View
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
@@ -16,25 +17,20 @@ class FeatureListViewModel @Inject constructor(
     private val tag = FeatureViewModel::class.java.simpleName
 
     private val featuresSubject: BehaviorSubject<List<Feature>> = BehaviorSubject.create()
-    private val isLoadingSubject: BehaviorSubject<Boolean> = BehaviorSubject.createDefault(false)
+    private val isLoadingSubject: BehaviorSubject<Int> = BehaviorSubject.createDefault(View.GONE)
 
     fun getFeatured(): Flowable<List<Feature>> {
-        if (isLoadingSubject.value) {
-            return Flowable.empty()
-        }
-
-        isLoadingSubject.onNext(true)
-
+        isLoadingSubject.onNext(View.VISIBLE)
         return steamClient
                 .getFeatured()
                 .subscribeOn(Schedulers.io())
                 .map(FeatureResponse::featured)
                 .doOnNext { featured -> featuresSubject.onNext(featured) }
                 .doOnError { error -> Log.e(tag, "Error loading features : $error") }
-                .doAfterTerminate { isLoadingSubject.onNext(false) }
+                .doAfterTerminate { isLoadingSubject.onNext(View.GONE) }
     }
 
-    fun getLoadingObservable(): Observable<Boolean> {
+    fun getLoadingObservable(): Observable<Int> {
         return isLoadingSubject
     }
 
