@@ -1,11 +1,9 @@
 package redstar.featured.ui.main
 
 import android.databinding.DataBindingUtil
-import android.opengl.Visibility
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.view.View
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -43,9 +41,12 @@ class MainActivity : AppCompatActivity() {
 
         )
 
-        if (savedInstanceState == null) {
-            subscriptions.add(viewModel.getFeatured().subscribe())
-        }
+        viewModel.onCreate(savedInstanceState)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        viewModel.onSaveInstanceState(outState)
     }
 
     private fun showLoading(loadingVisibility: Int) {

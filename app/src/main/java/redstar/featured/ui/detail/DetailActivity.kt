@@ -30,8 +30,6 @@ class DetailActivity : AppCompatActivity() {
         setSupportActionBar(binding.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
-        val appId = intent.getIntExtra(KEY_APP_ID, 0)
-
         subscriptions.addAll(
                 viewModel
                         .getDetailObservable()
@@ -39,9 +37,13 @@ class DetailActivity : AppCompatActivity() {
                         .subscribe { setDetails(it) }
         )
 
-        if (savedInstanceState == null) {
-            subscriptions.addAll(viewModel.getDetail(appId).subscribe())
-        }
+        val appId = intent.getIntExtra(KEY_APP_ID, 0)
+        viewModel.onCreate(appId, savedInstanceState)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        viewModel.onSaveInstanceState(outState)
     }
 
     private fun setDetails(details: Detail) {
